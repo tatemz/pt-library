@@ -1,12 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<HomePage /> should render and match the snapshot 1`] = `
+exports[`<HomePage /> should render books and match the snapshot 1`] = `
 <ul>
   <li>
-    1984
-  </li>
-  <li>
-    Dracula
+    The Adventures of Foo Bar
   </li>
 </ul>
 `;

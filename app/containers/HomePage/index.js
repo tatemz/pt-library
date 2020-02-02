@@ -5,15 +5,38 @@
  *
  */
 
-import React from 'react';
+import PropTypes from 'prop-types';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { useInjectReducer } from 'utils/injectReducer';
 import BookList from '../../components/BookList';
 import { BOOK_LIST_PROP_TYPE } from '../../components/BookList/constants';
+import { HOME_PAGE_KEY } from './constants';
+import reducer from './reducer';
+import { loadLibrary as loadLibraryAction } from './actions';
 
-export default function HomePage({ books }) {
+export function HomePage({ loading, error, books, loadLibrary }) {
+  useInjectReducer({ key: HOME_PAGE_KEY, reducer });
+
+  useEffect(() => {
+    if (loadLibrary) loadLibrary();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>There was an error loading the library.</p>;
+  }
+
   return <BookList books={books} />;
 }
 
 HomePage.defaultProps = {
+  loading: false,
+  error: null,
   books: [
     {
       title: '1984',
@@ -33,5 +56,21 @@ HomePage.defaultProps = {
 };
 
 HomePage.propTypes = {
+  loadLibrary: PropTypes.func,
+  loading: PropTypes.bool,
+  error: PropTypes.objectOf(Error),
   books: BOOK_LIST_PROP_TYPE,
 };
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    loadLibrary: () => dispatch(loadLibraryAction()),
+  };
+}
+
+const withConnect = connect(
+  null,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(HomePage);

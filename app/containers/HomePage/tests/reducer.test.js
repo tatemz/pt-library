@@ -5,6 +5,9 @@ import {
   loadLibrary,
   loadLibrarySuccess,
   loadLibraryFailure,
+  addBook,
+  addBookSuccess,
+  addBookFailure,
 } from '../actions';
 
 /* eslint-disable default-case, no-param-reassign */
@@ -14,6 +17,11 @@ describe('homePageReducer', () => {
     library: {
       books: [],
       loading: false,
+      error: null,
+    },
+    addedBook: {
+      book: null,
+      loading: true,
       error: null,
     },
   };
@@ -65,6 +73,49 @@ describe('homePageReducer', () => {
       });
 
       expect(homePageReducer(state, loadLibraryFailure(error))).toEqual(
+        expectedResult,
+      );
+    });
+  });
+
+  describe('ADD_BOOK', () => {
+    it('should start addBook', () => {
+      const expectedResult = produce(state, draft => {
+        draft.addedBook = {
+          ...initialState.addedBook,
+          loading: true,
+        };
+      });
+
+      expect(homePageReducer(state, addBook())).toEqual(expectedResult);
+    });
+
+    it('should successfully handle adding a new book', () => {
+      const book = { title: 'The Adventures of Foo Bar' };
+
+      const expectedResult = produce(state, draft => {
+        draft.addedBook = {
+          ...initialState.addedBook,
+          book,
+        };
+      });
+
+      expect(homePageReducer(state, addBookSuccess(book))).toEqual(
+        expectedResult,
+      );
+    });
+
+    it('should safely handle errors', () => {
+      const error = Error('Foo bar');
+
+      const expectedResult = produce(state, draft => {
+        draft.addedBook = {
+          ...initialState.addedBook,
+          error,
+        };
+      });
+
+      expect(homePageReducer(state, addBookFailure(error))).toEqual(
         expectedResult,
       );
     });

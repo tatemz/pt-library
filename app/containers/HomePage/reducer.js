@@ -9,15 +9,14 @@ import {
 } from './constants';
 
 export const initialState = {
+  errors: [],
   library: {
     books: [],
     loading: false,
-    error: null,
   },
-  addedBook: {
+  addBook: {
     book: null,
-    loading: true,
-    error: null,
+    loading: false,
   },
 };
 
@@ -25,37 +24,28 @@ export const initialState = {
 export default (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      // Load library actions actions
       case LOAD_LIBRARY:
         draft.library.loading = true;
         break;
       case LOAD_LIBRARY_SUCCESS:
-        draft.library = {
-          ...initialState.library,
-          books: action.books,
-        };
+        draft.library.loading = false;
+        draft.library.books = action.books;
         break;
       case LOAD_LIBRARY_FAILURE:
-        draft.library = {
-          ...initialState.library,
-          error: action.error,
-        };
+        draft.errors.push(action.error);
         break;
 
       // Add book actions
       case ADD_BOOK:
-        draft.addedBook.loading = true;
+        draft.addBook.loading = true;
         break;
       case ADD_BOOK_SUCCESS:
-        draft.addedBook = {
-          ...initialState.addedBook,
-          book: action.book,
-        };
+        draft.addBook.loading = false;
+        draft.addBook.book = action.book;
         break;
       case ADD_BOOK_FAILURE:
-        draft.addedBook = {
-          ...initialState.addedBook,
-          error: action.error,
-        };
+        draft.errors.push(action.error);
         break;
     }
   });

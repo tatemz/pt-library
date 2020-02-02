@@ -40,26 +40,32 @@ describe('<HomePage />', () => {
   });
 
   it('should handle loading state', () => {
-    const { getByText } = renderComponent({ loading: true });
+    const { getByText } = renderComponent({ libraryLoading: true });
     expect(getByText('Loading...')).toBeTruthy();
   });
 
   it('should handle error state and output the error message', () => {
     const error = Error('Foo bar');
-    const { getByText } = renderComponent({ error });
-    expect(getByText('There was an error loading the library.')).toBeTruthy();
+    const { getByText } = renderComponent({ errors: [error] });
+    expect(getByText(error.message)).toBeTruthy();
   });
 
   it('should render books and match the snapshot', () => {
-    const books = [mockBook];
+    const libraryBooks = [mockBook];
 
     const {
       getByText,
       container: { firstChild },
-    } = renderComponent({ books });
+    } = renderComponent({ libraryBooks });
 
-    expect(getByText(books[0].title)).toBeTruthy();
+    expect(getByText(libraryBooks[0].title)).toBeTruthy();
     expect(firstChild).toMatchSnapshot();
+  });
+
+  it('should do nothing on button click if no addBook callback exists', () => {
+    const { getByText } = renderComponent();
+    const button = getByText('Add Book');
+    fireEvent.click(button);
   });
 
   it('should add book on button click', () => {
@@ -80,12 +86,6 @@ describe('<HomePage />', () => {
     expect(button.disabled).toBe(true);
     fireEvent.click(button);
     expect(mockAddBook).not.toHaveBeenCalled();
-  });
-
-  it('should handle error state and output the error message when adding a new book', () => {
-    const addBookError = Error('Foo bar');
-    const { getByText } = renderComponent({ addBookError });
-    expect(getByText('There was an error adding a new book.')).toBeTruthy();
   });
 
   describe('mapDispatchToProps', () => {

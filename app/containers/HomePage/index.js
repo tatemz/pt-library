@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+
 /*
  * HomePage
  *
@@ -20,13 +22,12 @@ import { HOME_PAGE_KEY, NEW_BOOK } from './constants';
 import reducer from './reducer';
 
 export function HomePage({
-  loading,
-  error,
-  books,
-  addingBook,
-  addBookError,
-  loadLibrary,
   addBook,
+  addingBook,
+  errors,
+  libraryBooks,
+  libraryLoading,
+  loadLibrary,
 }) {
   useInjectReducer({ key: HOME_PAGE_KEY, reducer });
 
@@ -34,35 +35,37 @@ export function HomePage({
     if (loadLibrary) loadLibrary();
   }, []);
 
-  if (loading) {
+  if (libraryLoading) {
     return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>There was an error loading the library.</p>;
-  }
+  const errorMessages =
+    errors && errors.length > 0 ? (
+      <ul>
+        {errors.map((e, i) => (
+          <li key={`home-error-${i}`}>{e.message}</li>
+        ))}
+      </ul>
+    ) : null;
 
   return (
     <div>
-      <BookList books={books} />
+      {errorMessages}
+      <BookList books={libraryBooks} />
       <button
         type="button"
         disabled={addingBook}
-        onClick={() => addBook(NEW_BOOK)}
+        onClick={() => !addingBook && addBook && addBook(NEW_BOOK)}
       >
         Add Book
       </button>
-      {addBookError && <p>There was an error adding a new book.</p>}
     </div>
   );
 }
 
 HomePage.defaultProps = {
-  loading: false,
-  error: null,
-  addingBook: false,
-  addBookError: null,
-  books: [
+  errors: [],
+  libraryBooks: [
     {
       title: '1984',
       author: 'George Orwell',
@@ -81,13 +84,12 @@ HomePage.defaultProps = {
 };
 
 HomePage.propTypes = {
-  loadLibrary: PropTypes.func,
   addBook: PropTypes.func,
-  loading: PropTypes.bool,
-  error: PropTypes.objectOf(Error),
-  addBookError: PropTypes.objectOf(Error),
   addingBook: PropTypes.bool,
-  books: BOOK_LIST_PROP_TYPE,
+  errors: PropTypes.arrayOf(PropTypes.objectOf(Error)),
+  libraryBooks: BOOK_LIST_PROP_TYPE,
+  libraryLoading: PropTypes.bool,
+  loadLibrary: PropTypes.func,
 };
 
 export function mapDispatchToProps(dispatch) {

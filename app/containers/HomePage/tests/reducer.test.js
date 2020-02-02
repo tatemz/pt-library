@@ -14,15 +14,14 @@ import {
 describe('homePageReducer', () => {
   let state;
   const initialState = {
+    errors: [],
     library: {
       books: [],
       loading: false,
-      error: null,
     },
-    addedBook: {
+    addBook: {
       book: null,
-      loading: true,
-      error: null,
+      loading: false,
     },
   };
 
@@ -38,10 +37,7 @@ describe('homePageReducer', () => {
   describe('LOAD_LIBRARY', () => {
     it('should start loadLibrary', () => {
       const expectedResult = produce(state, draft => {
-        draft.library = {
-          ...initialState.library,
-          loading: true,
-        };
+        draft.library.loading = true;
       });
 
       expect(homePageReducer(state, loadLibrary())).toEqual(expectedResult);
@@ -51,10 +47,8 @@ describe('homePageReducer', () => {
       const books = [{ title: 'The Adventures of Foo Bar' }];
 
       const expectedResult = produce(state, draft => {
-        draft.library = {
-          ...initialState.library,
-          books,
-        };
+        draft.library.loading = false;
+        draft.library.books = books;
       });
 
       expect(homePageReducer(state, loadLibrarySuccess(books))).toEqual(
@@ -66,10 +60,8 @@ describe('homePageReducer', () => {
       const error = Error('Foo bar');
 
       const expectedResult = produce(state, draft => {
-        draft.library = {
-          ...initialState.library,
-          error,
-        };
+        draft.library.loading = false;
+        draft.errors.push(error);
       });
 
       expect(homePageReducer(state, loadLibraryFailure(error))).toEqual(
@@ -81,10 +73,7 @@ describe('homePageReducer', () => {
   describe('ADD_BOOK', () => {
     it('should start addBook', () => {
       const expectedResult = produce(state, draft => {
-        draft.addedBook = {
-          ...initialState.addedBook,
-          loading: true,
-        };
+        draft.addBook.loading = true;
       });
 
       expect(homePageReducer(state, addBook())).toEqual(expectedResult);
@@ -94,10 +83,8 @@ describe('homePageReducer', () => {
       const book = { title: 'The Adventures of Foo Bar' };
 
       const expectedResult = produce(state, draft => {
-        draft.addedBook = {
-          ...initialState.addedBook,
-          book,
-        };
+        draft.addBook.loading = false;
+        draft.addBook.book = book;
       });
 
       expect(homePageReducer(state, addBookSuccess(book))).toEqual(
@@ -109,10 +96,8 @@ describe('homePageReducer', () => {
       const error = Error('Foo bar');
 
       const expectedResult = produce(state, draft => {
-        draft.addedBook = {
-          ...initialState.addedBook,
-          error,
-        };
+        draft.addBook.loading = false;
+        draft.errors.push(error);
       });
 
       expect(homePageReducer(state, addBookFailure(error))).toEqual(

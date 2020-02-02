@@ -20,6 +20,7 @@ import {
 } from './actions';
 import { HOME_PAGE_KEY, NEW_BOOK } from './constants';
 import reducer from './reducer';
+import ErrorMessages from '../../components/ErrorMessages';
 
 export function HomePage({
   addBook,
@@ -39,18 +40,9 @@ export function HomePage({
     return <p>Loading...</p>;
   }
 
-  const errorMessages =
-    errors && errors.length > 0 ? (
-      <ul>
-        {errors.map((e, i) => (
-          <li key={`home-error-${i}`}>{e.message}</li>
-        ))}
-      </ul>
-    ) : null;
-
   return (
     <div>
-      {errorMessages}
+      <ErrorMessages errors={errors} />
       <BookList books={libraryBooks} />
       <button
         type="button"

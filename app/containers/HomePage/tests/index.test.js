@@ -39,28 +39,26 @@ describe('<HomePage />', () => {
     expect(mockLoadLibrary).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle loading state', async () => {
-    const { findByText } = renderComponent({ loading: true });
-    await expect(findByText('Loading...')).resolves.toBeTruthy();
+  it('should handle loading state', () => {
+    const { getByText } = renderComponent({ loading: true });
+    expect(getByText('Loading...')).toBeTruthy();
   });
 
-  it('should handle error state and output the error message', async () => {
+  it('should handle error state and output the error message', () => {
     const error = Error('Foo bar');
-    const { findByText } = renderComponent({ error });
-    await expect(
-      findByText('There was an error loading the library.'),
-    ).resolves.toBeTruthy();
+    const { getByText } = renderComponent({ error });
+    expect(getByText('There was an error loading the library.')).toBeTruthy();
   });
 
-  it('should render books and match the snapshot', async () => {
+  it('should render books and match the snapshot', () => {
     const books = [mockBook];
 
     const {
-      findByText,
+      getByText,
       container: { firstChild },
     } = renderComponent({ books });
 
-    await expect(findByText(books[0].title)).resolves.toBeTruthy();
+    expect(getByText(books[0].title)).toBeTruthy();
     expect(firstChild).toMatchSnapshot();
   });
 

@@ -85,6 +85,7 @@ describe('homePageReducer', () => {
       const expectedResult = produce(state, draft => {
         draft.addBook.loading = false;
         draft.addBook.book = book;
+        draft.library.books.push(book);
       });
 
       expect(homePageReducer(state, addBookSuccess(book))).toEqual(

@@ -43,6 +43,7 @@ export default (state = initialState, action) =>
       case ADD_BOOK_SUCCESS:
         draft.addBook.loading = false;
         draft.addBook.book = action.book;
+        draft.library.books.push(action.book);
         break;
       case ADD_BOOK_FAILURE:
         draft.errors.push(action.error);

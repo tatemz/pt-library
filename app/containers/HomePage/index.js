@@ -15,11 +15,15 @@ import { createStructuredSelector } from 'reselect';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
 import BookList from '../../components/BookList';
-import { BOOK_LIST_PROP_TYPE } from '../../components/BookList/constants';
+import {
+  BOOK_LIST_PROP_TYPE,
+  CHECK_BOOK_QUEUE_PROP_TYPE,
+} from '../../components/BookList/constants';
 import ErrorMessages from '../../components/ErrorMessages';
 import {
   addBook as addBookAction,
   loadLibrary as loadLibraryAction,
+  checkBook,
 } from './actions';
 import { HOME_PAGE_KEY } from './constants';
 import reducer from './reducer';
@@ -29,6 +33,7 @@ import {
   makeSelectErrors,
   makeSelectLibraryBooks,
   makeSelectLibraryLoading,
+  makeSelectCheckBookQueue,
 } from './selectors';
 
 export function HomePage({
@@ -38,6 +43,8 @@ export function HomePage({
   libraryBooks,
   libraryLoading,
   loadLibrary,
+  handleCheckBook,
+  checkBookQueue,
 }) {
   useInjectReducer({ key: HOME_PAGE_KEY, reducer });
   useInjectSaga({ key: HOME_PAGE_KEY, saga });
@@ -53,7 +60,11 @@ export function HomePage({
   return (
     <div>
       <ErrorMessages errors={errors} />
-      <BookList books={libraryBooks} />
+      <BookList
+        books={libraryBooks}
+        handleCheckBook={handleCheckBook}
+        checkBookQueue={checkBookQueue}
+      />
       <button
         type="button"
         disabled={addingBook}
@@ -77,6 +88,8 @@ HomePage.propTypes = {
   libraryBooks: BOOK_LIST_PROP_TYPE,
   libraryLoading: PropTypes.bool,
   loadLibrary: PropTypes.func,
+  handleCheckBook: PropTypes.func,
+  checkBookQueue: CHECK_BOOK_QUEUE_PROP_TYPE,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -84,12 +97,14 @@ const mapStateToProps = createStructuredSelector({
   errors: makeSelectErrors(),
   libraryBooks: makeSelectLibraryBooks(),
   libraryLoading: makeSelectLibraryLoading(),
+  checkBookQueue: makeSelectCheckBookQueue(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
     loadLibrary: () => dispatch(loadLibraryAction()),
     addBook: book => dispatch(addBookAction(book)),
+    handleCheckBook: (book, method) => dispatch(checkBook(book, method)),
   };
 }
 

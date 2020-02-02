@@ -5,6 +5,9 @@ import {
   ADD_BOOK,
   ADD_BOOK_SUCCESS,
   ADD_BOOK_FAILURE,
+  CHECK_BOOK,
+  CHECK_BOOK_SUCCESS,
+  CHECK_BOOK_FAILURE,
 } from './constants';
 
 export function loadLibrary() {
@@ -43,6 +46,29 @@ export function addBookSuccess(book) {
 export function addBookFailure(error) {
   return {
     type: ADD_BOOK_FAILURE,
+    error,
+  };
+}
+
+export function checkBook(book, method) {
+  return {
+    type: CHECK_BOOK,
+    book,
+    method,
+  };
+}
+
+export function checkBookSuccess(book) {
+  return {
+    type: CHECK_BOOK_SUCCESS,
+    book,
+  };
+}
+
+export function checkBookFailure(book, error) {
+  return {
+    type: CHECK_BOOK_FAILURE,
+    book,
     error,
   };
 }

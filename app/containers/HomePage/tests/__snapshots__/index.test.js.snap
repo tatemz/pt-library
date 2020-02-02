@@ -5,6 +5,11 @@ exports[`<HomePage /> should render books and match the snapshot 1`] = `
   <ul>
     <li>
       The Adventures of Foo Bar
+      <button
+        type="button"
+      >
+        Checkout
+      </button>
     </li>
   </ul>
   <button

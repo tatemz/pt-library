@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { browserHistory } from 'react-router-dom';
 import { render, fireEvent } from 'react-testing-library';
 import configureStore from '../../../configureStore';
-import { addBook, loadLibrary } from '../actions';
+import { addBook, loadLibrary, checkBook } from '../actions';
 import { HomePage, mapDispatchToProps } from '../index';
 
 describe('<HomePage />', () => {
@@ -22,6 +22,7 @@ describe('<HomePage />', () => {
     isbn: '12345678',
     description:
       "Where did 'foo' and 'bar' come from? Find out in this timeless classic.",
+    checked: false,
   };
 
   beforeAll(() => {
@@ -101,6 +102,14 @@ describe('<HomePage />', () => {
       const result = mapDispatchToProps(dispatch);
       result.addBook();
       expect(dispatch).toHaveBeenCalledWith(addBook());
+    });
+
+    it('should inject handleCheckBook and dispatch when called', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      const book = 'Foo';
+      result.handleCheckBook(book);
+      expect(dispatch).toHaveBeenCalledWith(checkBook(book));
     });
   });
 });

@@ -11,6 +11,9 @@ export const selectHomePageLibrary = state =>
 export const selectHomePageAddBook = state =>
   selectHomePage(state).addBook || initialState.addBook;
 
+export const selectHomePageCheckBookQueue = state =>
+  selectHomePage(state).checkBookQueue || initialState.checkBookQueue;
+
 export const makeSelectErrors = () =>
   createSelector(
     selectHomePage,
@@ -33,4 +36,10 @@ export const makeSelectAddingBook = () =>
   createSelector(
     selectHomePageAddBook,
     addBookState => addBookState.loading,
+  );
+
+export const makeSelectCheckBookQueue = () =>
+  createSelector(
+    selectHomePageCheckBookQueue,
+    checkBookQueue => checkBookQueue,
   );

@@ -6,6 +6,9 @@ import {
   ADD_BOOK,
   ADD_BOOK_SUCCESS,
   ADD_BOOK_FAILURE,
+  CHECK_BOOK,
+  CHECK_BOOK_SUCCESS,
+  CHECK_BOOK_FAILURE,
 } from './constants';
 
 export const initialState = {
@@ -18,6 +21,7 @@ export const initialState = {
     book: null,
     loading: false,
   },
+  checkBookQueue: [],
 };
 
 /* eslint-disable no-param-reassign, default-case */
@@ -46,6 +50,28 @@ export default (state = initialState, action) =>
         draft.library.books.push(action.book);
         break;
       case ADD_BOOK_FAILURE:
+        draft.errors.push(action.error);
+        break;
+
+      // Check book actions
+      case CHECK_BOOK:
+        draft.checkBookQueue.push({
+          book: action.book,
+          method: action.method,
+        });
+        break;
+      case CHECK_BOOK_SUCCESS:
+        draft.library.books = draft.library.books.map(book =>
+          book.isbn === action.book.isbn ? action.book : book,
+        );
+        draft.checkBookQueue = draft.checkBookQueue.filter(
+          ({ book }) => book.isbn !== action.book.isbn,
+        );
+        break;
+      case CHECK_BOOK_FAILURE:
+        draft.checkBookQueue = draft.checkBookQueue.filter(
+          ({ book }) => book.isbn !== action.book.isbn,
+        );
         draft.errors.push(action.error);
         break;
     }

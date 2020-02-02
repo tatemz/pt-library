@@ -6,6 +6,8 @@ import {
   makeSelectLibraryBooks,
   makeSelectLibraryLoading,
   makeSelectAddingBook,
+  makeSelectCheckBookQueue,
+  selectHomePageCheckBookQueue,
 } from '../selectors';
 import { HOME_PAGE_KEY } from '../constants';
 import { initialState } from '../reducer';
@@ -63,6 +65,25 @@ describe('selectHomePageAddBook', () => {
   });
 });
 
+describe('selectHomePageCheckBookQueue', () => {
+  it('should select the home page addBook substate', () => {
+    const checkBookQueueState = 'Foo';
+    const mockedState = {
+      [HOME_PAGE_KEY]: {
+        checkBookQueue: checkBookQueueState,
+      },
+    };
+    expect(selectHomePageCheckBookQueue(mockedState)).toBe(checkBookQueueState);
+  });
+
+  it('should fallback to using the initial state', () => {
+    expect(selectHomePageCheckBookQueue()).toBe(initialState.checkBookQueue);
+    expect(selectHomePageCheckBookQueue({ [HOME_PAGE_KEY]: {} })).toBe(
+      initialState.checkBookQueue,
+    );
+  });
+});
+
 describe('makeSelectErrors', () => {
   const errorsSelector = makeSelectErrors();
   it('should select the home page errors ', () => {
@@ -111,5 +132,19 @@ describe('makeSelectAddingBook', () => {
       },
     };
     expect(addingBookSelector(mockedState)).toBe(true);
+  });
+});
+
+describe('makeSelectCheckBookQueue', () => {
+  const checkBookQueueSelector = makeSelectCheckBookQueue();
+  it('should select the makeSelectAddingBook', () => {
+    const checkBookQueue = 'foo';
+
+    const mockedState = {
+      [HOME_PAGE_KEY]: {
+        checkBookQueue,
+      },
+    };
+    expect(checkBookQueueSelector(mockedState)).toBe(checkBookQueue);
   });
 });

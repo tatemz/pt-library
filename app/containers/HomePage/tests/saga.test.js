@@ -2,16 +2,29 @@
  * Tests for HomePage sagas
  */
 
-import { put, takeLatest, all } from 'redux-saga/effects';
+import { all, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import {
-  loadLibraryFailure,
-  loadLibrarySuccess,
   addBookFailure,
   addBookSuccess,
+  checkBookFailure,
+  checkBookSuccess,
+  loadLibraryFailure,
+  loadLibrarySuccess,
 } from '../actions';
-import { LOAD_LIBRARY, ADD_BOOK, DEFAULT_BOOKS, NEW_BOOK } from '../constants';
-
-import homePageSagas, { loadLibrarySaga, addBookSaga } from '../saga';
+import {
+  ADD_BOOK,
+  CHECK_BOOK,
+  CHECK_BOOK_METHOD_IN,
+  CHECK_BOOK_METHOD_OUT,
+  DEFAULT_BOOKS,
+  LOAD_LIBRARY,
+  NEW_BOOK,
+} from '../constants';
+import homePageSagas, {
+  addBookSaga,
+  checkBookSaga,
+  loadLibrarySaga,
+} from '../saga';
 
 /* eslint-disable redux-saga/yield-effects */
 describe('loadLibrarySaga', () => {
@@ -58,15 +71,51 @@ describe('addBookSaga', () => {
   });
 });
 
+describe('checkBookSaga', () => {
+  let checkBookGenerator;
+  const book = NEW_BOOK;
+
+  beforeEach(() => {
+    checkBookGenerator = checkBookSaga({ book });
+  });
+
+  it('should dispatch the checkout checkBookSuccess action if it requests the data successfully', () => {
+    checkBookGenerator = checkBookSaga({ book, method: CHECK_BOOK_METHOD_OUT });
+    const putDescriptor = checkBookGenerator.next();
+    expect(putDescriptor.value).toEqual(
+      put(checkBookSuccess({ ...book, checked: true })),
+    );
+    expect(checkBookGenerator.next().done).toBe(true);
+  });
+
+  it('should dispatch the checkin checkBookSuccess action if it requests the data successfully', () => {
+    checkBookGenerator = checkBookSaga({ book, method: CHECK_BOOK_METHOD_IN });
+    const putDescriptor = checkBookGenerator.next();
+    expect(putDescriptor.value).toEqual(
+      put(checkBookSuccess({ ...book, checked: false })),
+    );
+    expect(checkBookGenerator.next().done).toBe(true);
+  });
+
+  it('should call the checkBookFailure action if the response errors', () => {
+    checkBookGenerator.next();
+    const error = Error('Foo');
+    const putDescriptor = checkBookGenerator.throw(error);
+    expect(putDescriptor.value).toEqual(put(checkBookFailure(book, error)));
+    expect(checkBookGenerator.next().done).toBe(true);
+  });
+});
+
 describe('homePageSagas', () => {
   const homePageSagasGenerator = homePageSagas();
 
-  it('should start task to watch for LOAD_REPOS action', () => {
+  it('should start task to watch for watched actions', () => {
     const allDescriptor = homePageSagasGenerator.next();
     expect(allDescriptor.value).toEqual(
       all([
         takeLatest(LOAD_LIBRARY, loadLibrarySaga),
         takeLatest(ADD_BOOK, addBookSaga),
+        takeEvery(CHECK_BOOK, checkBookSaga),
       ]),
     );
     expect(homePageSagasGenerator.next().done).toBe(true);

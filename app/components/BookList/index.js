@@ -4,6 +4,7 @@
  *
  */
 
+import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React from 'react';
 import BookListItem from './BookListItem';
@@ -15,18 +16,19 @@ function BookList({ books, handleCheckBook, checkBookQueue }) {
   }
 
   return (
-    <ul>
+    <Grid container spacing={4}>
       {books.map(book => (
-        <BookListItem
-          key={`book-${book.isbn}`}
-          book={book}
-          handleCheckBook={handleCheckBook}
-          isBeingChecked={checkBookQueue.some(
-            item => item.book.isbn === book.isbn,
-          )}
-        />
+        <Grid key={`book-${book.isbn}`} item md={3}>
+          <BookListItem
+            book={book}
+            handleCheckBook={handleCheckBook}
+            isBeingChecked={checkBookQueue.some(
+              item => item.book.isbn === book.isbn,
+            )}
+          />
+        </Grid>
       ))}
-    </ul>
+    </Grid>
   );
 }
 

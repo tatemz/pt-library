@@ -9,7 +9,6 @@
 import React from 'react';
 import { render } from 'react-testing-library';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
-
 import BookList from '../index';
 
 describe('<BookList />', () => {
@@ -57,8 +56,8 @@ describe('<BookList />', () => {
     const { getByText } = render(
       <BookList books={[books[0]]} checkBookQueue={checkBookQueue} />,
     );
-    const button = getByText('Checkout');
-    expect(button.disabled).toBeTruthy();
+    const buttonSpan = getByText('Checkout');
+    expect(buttonSpan.parentElement.disabled).toBeTruthy();
   });
 
   /**

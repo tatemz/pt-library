@@ -7,6 +7,7 @@
  *
  */
 
+import Container from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
@@ -22,18 +23,18 @@ import {
 import ErrorMessages from '../../components/ErrorMessages';
 import {
   addBook as addBookAction,
-  loadLibrary as loadLibraryAction,
   checkBook,
+  loadLibrary as loadLibraryAction,
 } from './actions';
 import { HOME_PAGE_KEY } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import {
   makeSelectAddingBook,
+  makeSelectCheckBookQueue,
   makeSelectErrors,
   makeSelectLibraryBooks,
   makeSelectLibraryLoading,
-  makeSelectCheckBookQueue,
 } from './selectors';
 
 export function HomePage({
@@ -58,21 +59,23 @@ export function HomePage({
   }
 
   return (
-    <div>
-      <ErrorMessages errors={errors} />
-      <BookList
-        books={libraryBooks}
-        handleCheckBook={handleCheckBook}
-        checkBookQueue={checkBookQueue}
-      />
-      <button
-        type="button"
-        disabled={addingBook}
-        onClick={() => !addingBook && addBook && addBook()}
-      >
-        Add Book
-      </button>
-    </div>
+    <main>
+      <Container>
+        <ErrorMessages errors={errors} />
+        <BookList
+          books={libraryBooks}
+          handleCheckBook={handleCheckBook}
+          checkBookQueue={checkBookQueue}
+        />
+        <button
+          type="button"
+          disabled={addingBook}
+          onClick={() => !addingBook && addBook && addBook()}
+        >
+          Add Book
+        </button>
+      </Container>
+    </main>
   );
 }
 

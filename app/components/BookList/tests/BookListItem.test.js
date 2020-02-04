@@ -72,9 +72,9 @@ describe('<BookListItem />', () => {
       handleCheckBook: mockHandleCheckBook,
       isBeingChecked: true,
     });
-    const button = getByText('Checkin');
-    expect(button.disabled).toBeTruthy();
-    fireEvent.click(button);
+    const buttonSpan = getByText('Checkin');
+    expect(buttonSpan.parentElement.disabled).toBeTruthy();
+    fireEvent.click(buttonSpan.parentElement);
     expect(mockHandleCheckBook).not.toHaveBeenCalled();
   });
 

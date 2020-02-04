@@ -1,4 +1,4 @@
-module gitlab.com/tatemz/pt-library
+module github.com/tatemz/pt-library
 
 go 1.13
 

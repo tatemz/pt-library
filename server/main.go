@@ -10,7 +10,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"gitlab.com/tatemz/pt-library/service"
+	"github.com/tatemz/pt-library/service"
 )
 
 func main() {

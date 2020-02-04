@@ -17,8 +17,8 @@
 
 This project is a monorepo for two applications that depend on a Mongo DB host:
 
-- [A GoLang REST CRUD API](./web/README.md)
-- [A React web app](./server/README.md)
+- [A GoLang REST CRUD API](./server/README.md)
+- [A React web app](./web/README.md)
 
 ## Setup
 

@@ -45,17 +45,30 @@ export function ManagePage({
       columns={[
         {
           cellStyle: noWrap,
+          headerStyle: noWrap,
           title: 'ISBN',
           field: 'isbn',
           editable: 'onAdd',
         },
-        { cellStyle: noWrap, title: 'Title', field: 'title' },
-        { cellStyle: noWrap, title: 'Author', field: 'author' },
+        {
+          cellStyle: noWrap,
+          headerStyle: noWrap,
+          title: 'Title',
+          field: 'title',
+        },
+        {
+          cellStyle: noWrap,
+          headerStyle: noWrap,
+          title: 'Author',
+          field: 'author',
+        },
         {
           title: 'Description',
           field: 'description',
         },
         {
+          cellStyle: noWrap,
+          headerStyle: noWrap,
           title: 'Checked Out',
           field: 'checked',
           type: 'boolean',

@@ -1,15 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { browserHistory } from 'react-router-dom';
-import { render, fireEvent } from 'react-testing-library';
+import { render } from 'react-testing-library';
 import configureStore from '../../../configureStore';
-import {
-  addBook,
-  loadLibrary,
-  checkBook,
-  toggleAddBookDialog,
-} from '../actions';
+import { checkBook } from '../actions';
 import { HomePage, mapDispatchToProps } from '../index';
+import { loadLibrary } from '../../App/actions';
 
 describe('<HomePage />', () => {
   let store;
@@ -68,42 +64,6 @@ describe('<HomePage />', () => {
     expect(firstChild).toMatchSnapshot();
   });
 
-  it('should do nothing on button click if no addBook callback exists', () => {
-    const { getByText } = renderComponent();
-    const button = getByText('Add Book');
-    fireEvent.click(button);
-  });
-
-  it.skip('should add book on button click', () => {
-    const mockAddBook = jest.fn();
-    const { getByText } = renderComponent({ addBook: mockAddBook });
-    const button = getByText('Add Book');
-    fireEvent.click(button);
-    expect(mockAddBook).toHaveBeenCalledTimes(1);
-  });
-
-  it.skip('should disable button when adding book', () => {
-    const mockAddBook = jest.fn();
-    const { getByText } = renderComponent({
-      addBook: mockAddBook,
-      addingBook: true,
-    });
-    const button = getByText('Add Book');
-    expect(button.disabled).toBe(true);
-    fireEvent.click(button);
-    expect(mockAddBook).not.toHaveBeenCalled();
-  });
-
-  it('should toggle add book dialog on click', () => {
-    const mockToggleAddBookDialog = jest.fn();
-    const { getByText } = renderComponent({
-      toggleAddBookDialog: mockToggleAddBookDialog,
-    });
-    const button = getByText('Add Book');
-    fireEvent.click(button);
-    expect(mockToggleAddBookDialog).toHaveBeenCalledTimes(1);
-  });
-
   describe('mapDispatchToProps', () => {
     it('should inject loadLibrary and dispatch when called', () => {
       const dispatch = jest.fn();
@@ -112,26 +72,12 @@ describe('<HomePage />', () => {
       expect(dispatch).toHaveBeenCalledWith(loadLibrary());
     });
 
-    it('should inject addBook and dispatch when called', () => {
-      const dispatch = jest.fn();
-      const result = mapDispatchToProps(dispatch);
-      result.addBook();
-      expect(dispatch).toHaveBeenCalledWith(addBook());
-    });
-
     it('should inject handleCheckBook and dispatch when called', () => {
       const dispatch = jest.fn();
       const result = mapDispatchToProps(dispatch);
       const book = 'Foo';
       result.handleCheckBook(book);
       expect(dispatch).toHaveBeenCalledWith(checkBook(book));
-    });
-
-    it('should inject toggleAddBookDialog and dispatch when called', () => {
-      const dispatch = jest.fn();
-      const result = mapDispatchToProps(dispatch);
-      result.toggleAddBookDialog();
-      expect(dispatch).toHaveBeenCalledWith(toggleAddBookDialog());
     });
   });
 });

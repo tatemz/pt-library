@@ -8,3 +8,8 @@
  * Follow this format:
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
+export const APP_KEY = 'app';
+
+export const LOAD_LIBRARY = 'web-app/App/LOAD_LIBRARY';
+export const LOAD_LIBRARY_SUCCESS = 'web-app/App/LOAD_LIBRARY_SUCCESS';
+export const LOAD_LIBRARY_FAILURE = 'web-app/App/LOAD_LIBRARY_FAILURE';

@@ -15,42 +15,31 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
-import AddBookDialog from '../../components/AddBookDialog';
 import BookList from '../../components/BookList';
 import {
   BOOK_LIST_PROP_TYPE,
   CHECK_BOOK_QUEUE_PROP_TYPE,
 } from '../../components/BookList/constants';
 import ErrorMessages from '../../components/ErrorMessages';
+import { loadLibrary as loadLibraryAction } from '../App/actions';
 import {
-  addBook as addBookAction,
-  checkBook,
-  loadLibrary as loadLibraryAction,
-  toggleAddBookDialog as toggleAddBookDialogAction,
-} from './actions';
-import { HOME_PAGE_KEY } from './constants';
-import reducer from './reducer';
-import saga from './saga';
-import {
-  makeAddBookDialogOpen,
-  makeSelectAddingBook,
-  makeSelectCheckBookQueue,
   makeSelectErrors,
   makeSelectLibraryBooks,
   makeSelectLibraryLoading,
-} from './selectors';
+} from '../App/selectors';
+import { checkBook } from './actions';
+import { HOME_PAGE_KEY } from './constants';
+import reducer from './reducer';
+import saga from './saga';
+import { makeSelectCheckBookQueue } from './selectors';
 
 export function HomePage({
-  // addBook,
-  // addingBook,
   errors,
   libraryBooks,
   libraryLoading,
   loadLibrary,
   handleCheckBook,
   checkBookQueue,
-  addBookDialogOpen,
-  toggleAddBookDialog,
 }) {
   useInjectReducer({ key: HOME_PAGE_KEY, reducer });
   useInjectSaga({ key: HOME_PAGE_KEY, saga });
@@ -63,8 +52,6 @@ export function HomePage({
     return <p>Loading...</p>;
   }
 
-  const maybeToggleDialog = () => toggleAddBookDialog && toggleAddBookDialog();
-
   return (
     <main>
       <Container>
@@ -74,13 +61,6 @@ export function HomePage({
           handleCheckBook={handleCheckBook}
           checkBookQueue={checkBookQueue}
         />
-        <AddBookDialog
-          open={addBookDialogOpen}
-          handleClose={maybeToggleDialog}
-        />
-        <button type="button" onClick={maybeToggleDialog}>
-          Add Book
-        </button>
       </Container>
     </main>
   );
@@ -89,37 +69,28 @@ export function HomePage({
 HomePage.defaultProps = {
   errors: [],
   libraryBooks: [],
-  addBookDialogOpen: false,
 };
 
 HomePage.propTypes = {
-  // addBook: PropTypes.func,
-  // addingBook: PropTypes.bool,
   errors: PropTypes.arrayOf(PropTypes.objectOf(Error)),
   libraryBooks: BOOK_LIST_PROP_TYPE,
   libraryLoading: PropTypes.bool,
   loadLibrary: PropTypes.func,
   handleCheckBook: PropTypes.func,
   checkBookQueue: CHECK_BOOK_QUEUE_PROP_TYPE,
-  toggleAddBookDialog: PropTypes.func,
-  addBookDialogOpen: PropTypes.bool,
 };
 
 const mapStateToProps = createStructuredSelector({
-  addingBook: makeSelectAddingBook(),
   errors: makeSelectErrors(),
   libraryBooks: makeSelectLibraryBooks(),
   libraryLoading: makeSelectLibraryLoading(),
   checkBookQueue: makeSelectCheckBookQueue(),
-  addBookDialogOpen: makeAddBookDialogOpen(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
     loadLibrary: () => dispatch(loadLibraryAction()),
-    addBook: book => dispatch(addBookAction(book)),
     handleCheckBook: (book, method) => dispatch(checkBook(book, method)),
-    toggleAddBookDialog: () => dispatch(toggleAddBookDialogAction()),
   };
 }
 

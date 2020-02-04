@@ -37,7 +37,7 @@ describe('libraryService repository', () => {
     });
 
     it('should autoinsert the host with each fetch request', () => {
-      fetch.resetMocks();
+      fetch.mockReset();
       fetch.mockResponseOnce(JSON.stringify({}));
       const libraryService = createLibraryService(host);
       const path = '/bar';
@@ -45,8 +45,18 @@ describe('libraryService repository', () => {
       expect(fetch).toHaveBeenCalledWith(host + path);
     });
 
+    it('should pass options to fetch', () => {
+      fetch.mockReset();
+      fetch.mockResponseOnce(JSON.stringify({}));
+      const libraryService = createLibraryService(host);
+      const path = '/bar';
+      const options = { method: 'POST' };
+      libraryService(path, options);
+      expect(fetch).toHaveBeenCalledWith(host + path, options);
+    });
+
     it('should auto parse the response body json', async () => {
-      fetch.resetMocks();
+      fetch.mockReset();
       const mockJson = { data: '12345' };
       fetch.mockResponseOnce(JSON.stringify(mockJson));
       const libraryService = createLibraryService(host);
@@ -101,7 +111,7 @@ describe('libraryService repository', () => {
       await createBook(mockBook, libraryService);
       expect(libraryService).toHaveBeenCalledWith(`/books`, {
         method: 'POST',
-        body: JSON.stringify(mockBook),
+        body: JSON.stringify({ book: mockBook }),
       });
     });
 
@@ -120,7 +130,7 @@ describe('libraryService repository', () => {
       await updateBook(mockBook, libraryService);
       expect(libraryService).toHaveBeenCalledWith(`/books/${isbn}`, {
         method: 'PUT',
-        body: JSON.stringify(mockBook),
+        body: JSON.stringify({ book: mockBook }),
       });
     });
 
@@ -179,7 +189,9 @@ describe('libraryService repository', () => {
         await checkBook(isbn, method, libraryService);
         expect(libraryService).toHaveBeenNthCalledWith(2, `/books/${isbn}`, {
           method: 'PUT',
-          body: JSON.stringify({ ...mockBook, checked: expectedCheckResult }),
+          body: JSON.stringify({
+            book: { ...mockBook, checked: expectedCheckResult },
+          }),
         });
       };
       const isbn = '123';

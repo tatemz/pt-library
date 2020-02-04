@@ -22,8 +22,8 @@ export function getUri(url) {
 
 export function createLibraryService(host) {
   const sanitizedHost = host.replace(/\/$/, '');
-  return async url => {
-    const response = await fetch(sanitizedHost + getUri(url));
+  return async (url, ...args) => {
+    const response = await fetch(sanitizedHost + getUri(url), ...args);
     return response.json();
   };
 }
@@ -47,10 +47,12 @@ export async function createBook(book, libraryService) {
     throw ERR_ISBN_REQUIRED;
   }
 
-  await libraryService(`/books`, {
+  const data = await libraryService(`/books`, {
     method: 'POST',
-    body: JSON.stringify(book),
+    body: JSON.stringify({ book }),
   });
+
+  return data.book;
 }
 
 export async function updateBook(book, libraryService) {
@@ -60,7 +62,7 @@ export async function updateBook(book, libraryService) {
 
   await libraryService(`/books/${book.isbn}`, {
     method: 'PUT',
-    body: JSON.stringify(book),
+    body: JSON.stringify({ book }),
   });
 }
 

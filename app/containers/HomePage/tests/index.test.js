@@ -3,7 +3,12 @@ import { Provider } from 'react-redux';
 import { browserHistory } from 'react-router-dom';
 import { render, fireEvent } from 'react-testing-library';
 import configureStore from '../../../configureStore';
-import { addBook, loadLibrary, checkBook } from '../actions';
+import {
+  addBook,
+  loadLibrary,
+  checkBook,
+  toggleAddBookDialog,
+} from '../actions';
 import { HomePage, mapDispatchToProps } from '../index';
 
 describe('<HomePage />', () => {
@@ -69,7 +74,7 @@ describe('<HomePage />', () => {
     fireEvent.click(button);
   });
 
-  it('should add book on button click', () => {
+  it.skip('should add book on button click', () => {
     const mockAddBook = jest.fn();
     const { getByText } = renderComponent({ addBook: mockAddBook });
     const button = getByText('Add Book');
@@ -77,7 +82,7 @@ describe('<HomePage />', () => {
     expect(mockAddBook).toHaveBeenCalledTimes(1);
   });
 
-  it('should disable button when adding book', () => {
+  it.skip('should disable button when adding book', () => {
     const mockAddBook = jest.fn();
     const { getByText } = renderComponent({
       addBook: mockAddBook,
@@ -87,6 +92,16 @@ describe('<HomePage />', () => {
     expect(button.disabled).toBe(true);
     fireEvent.click(button);
     expect(mockAddBook).not.toHaveBeenCalled();
+  });
+
+  it('should toggle add book dialog on click', () => {
+    const mockToggleAddBookDialog = jest.fn();
+    const { getByText } = renderComponent({
+      toggleAddBookDialog: mockToggleAddBookDialog,
+    });
+    const button = getByText('Add Book');
+    fireEvent.click(button);
+    expect(mockToggleAddBookDialog).toHaveBeenCalledTimes(1);
   });
 
   describe('mapDispatchToProps', () => {
@@ -110,6 +125,13 @@ describe('<HomePage />', () => {
       const book = 'Foo';
       result.handleCheckBook(book);
       expect(dispatch).toHaveBeenCalledWith(checkBook(book));
+    });
+
+    it('should inject toggleAddBookDialog and dispatch when called', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      result.toggleAddBookDialog();
+      expect(dispatch).toHaveBeenCalledWith(toggleAddBookDialog());
     });
   });
 });

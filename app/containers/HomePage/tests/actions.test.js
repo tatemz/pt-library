@@ -9,6 +9,7 @@ import {
   CHECK_BOOK_SUCCESS,
   CHECK_BOOK_FAILURE,
   CHECK_BOOK_METHOD_OUT,
+  TOGGLE_ADD_BOOK_DIALOG,
 } from '../constants';
 
 import {
@@ -21,6 +22,7 @@ import {
   checkBook,
   checkBookSuccess,
   checkBookFailure,
+  toggleAddBookDialog,
 } from '../actions';
 
 describe('Home Actions', () => {
@@ -132,6 +134,16 @@ describe('Home Actions', () => {
       };
 
       expect(checkBookFailure(book, error)).toEqual(expectedResult);
+    });
+  });
+
+  describe('checkBookFailure', () => {
+    it('should return the correct type', () => {
+      const expectedResult = {
+        type: TOGGLE_ADD_BOOK_DIALOG,
+      };
+
+      expect(toggleAddBookDialog()).toEqual(expectedResult);
     });
   });
 });

@@ -12,6 +12,8 @@ export const CHECK_BOOK = 'web-app/HomePage/CHECK_BOOK';
 export const CHECK_BOOK_SUCCESS = 'web-app/HomePage/CHECK_BOOK_SUCCESS';
 export const CHECK_BOOK_FAILURE = 'web-app/HomePage/CHECK_BOOK_FAILURE';
 
+export const TOGGLE_ADD_BOOK_DIALOG = 'web-app/HomePage/TOGGLE_ADD_BOOK_DIALOG';
+
 export const CHECK_BOOK_METHOD_IN = 'CHECKIN';
 export const CHECK_BOOK_METHOD_OUT = 'CHECKOUT';
 

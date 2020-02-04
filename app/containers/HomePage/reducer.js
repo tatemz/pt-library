@@ -9,6 +9,7 @@ import {
   CHECK_BOOK,
   CHECK_BOOK_SUCCESS,
   CHECK_BOOK_FAILURE,
+  TOGGLE_ADD_BOOK_DIALOG,
 } from './constants';
 
 export const initialState = {
@@ -22,6 +23,7 @@ export const initialState = {
     loading: false,
   },
   checkBookQueue: [],
+  addBookDialogOpen: false,
 };
 
 /* eslint-disable no-param-reassign, default-case */
@@ -73,6 +75,11 @@ export default (state = initialState, action) =>
           ({ book }) => book.isbn !== action.book.isbn,
         );
         draft.errors.push(action.error);
+        break;
+
+      // Toggle add book dialog actions
+      case TOGGLE_ADD_BOOK_DIALOG:
+        draft.addBookDialogOpen = !state.addBookDialogOpen;
         break;
     }
   });

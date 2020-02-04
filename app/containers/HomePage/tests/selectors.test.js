@@ -8,6 +8,7 @@ import {
   makeSelectAddingBook,
   makeSelectCheckBookQueue,
   selectHomePageCheckBookQueue,
+  makeAddBookDialogOpen,
 } from '../selectors';
 import { HOME_PAGE_KEY } from '../constants';
 import { initialState } from '../reducer';
@@ -146,5 +147,17 @@ describe('makeSelectCheckBookQueue', () => {
       },
     };
     expect(checkBookQueueSelector(mockedState)).toBe(checkBookQueue);
+  });
+});
+
+describe('makeAddBookDialogOpen', () => {
+  const addBookDialogOpenSelector = makeAddBookDialogOpen();
+  it('should select the addBookDialogOpen', () => {
+    const mockedState = {
+      [HOME_PAGE_KEY]: {
+        addBookDialogOpen: true,
+      },
+    };
+    expect(addBookDialogOpenSelector(mockedState)).toBe(true);
   });
 });

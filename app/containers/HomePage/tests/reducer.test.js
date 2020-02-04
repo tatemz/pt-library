@@ -11,6 +11,7 @@ import {
   checkBook,
   checkBookSuccess,
   checkBookFailure,
+  toggleAddBookDialog,
 } from '../actions';
 import { CHECK_BOOK_METHOD_IN, CHECK_BOOK_METHOD_OUT } from '../constants';
 
@@ -28,6 +29,7 @@ describe('homePageReducer', () => {
       loading: false,
     },
     checkBookQueue: [],
+    addBookDialogOpen: false,
   };
 
   beforeEach(() => {
@@ -208,6 +210,18 @@ describe('homePageReducer', () => {
       expect(
         homePageReducer(prepopulatedState, checkBookFailure(bookFoo, error)),
       ).toEqual(expectedResult);
+    });
+  });
+
+  describe('TOGGLE_ADD_BOOK_DIALOG', () => {
+    it('should toggle add book dialog value', () => {
+      const expectedResult = produce(state, draft => {
+        draft.addBookDialogOpen = true;
+      });
+
+      expect(homePageReducer(state, toggleAddBookDialog())).toEqual(
+        expectedResult,
+      );
     });
   });
 });

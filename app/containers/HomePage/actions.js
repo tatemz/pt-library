@@ -8,6 +8,7 @@ import {
   CHECK_BOOK,
   CHECK_BOOK_SUCCESS,
   CHECK_BOOK_FAILURE,
+  TOGGLE_ADD_BOOK_DIALOG,
 } from './constants';
 
 export function loadLibrary() {
@@ -29,7 +30,6 @@ export function loadLibraryFailure(error) {
     error,
   };
 }
-
 export function addBook(book) {
   return {
     type: ADD_BOOK,
@@ -71,5 +71,11 @@ export function checkBookFailure(book, error) {
     type: CHECK_BOOK_FAILURE,
     book,
     error,
+  };
+}
+
+export function toggleAddBookDialog() {
+  return {
+    type: TOGGLE_ADD_BOOK_DIALOG,
   };
 }

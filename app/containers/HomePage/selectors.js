@@ -43,3 +43,9 @@ export const makeSelectCheckBookQueue = () =>
     selectHomePageCheckBookQueue,
     checkBookQueue => checkBookQueue,
   );
+
+export const makeAddBookDialogOpen = () =>
+  createSelector(
+    selectHomePage,
+    homePage => homePage.addBookDialogOpen,
+  );

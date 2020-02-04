@@ -2,7 +2,8 @@
  * Tests for HomePage sagas
  */
 
-import { all, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { all, put, takeEvery, takeLatest, call } from 'redux-saga/effects';
+import { createLibraryService } from '../../../repository/libraryService';
 import {
   addBookFailure,
   addBookSuccess,
@@ -16,7 +17,6 @@ import {
   CHECK_BOOK,
   CHECK_BOOK_METHOD_IN,
   CHECK_BOOK_METHOD_OUT,
-  DEFAULT_BOOKS,
   LOAD_LIBRARY,
   NEW_BOOK,
 } from '../constants';
@@ -28,15 +28,24 @@ import homePageSagas, {
 
 /* eslint-disable redux-saga/yield-effects */
 describe('loadLibrarySaga', () => {
+  let getBooks;
   let loadLibraryGenerator;
+  let callGetBooksDescriptor;
 
   beforeEach(() => {
-    loadLibraryGenerator = loadLibrarySaga();
+    getBooks = jest.fn();
+    loadLibraryGenerator = loadLibrarySaga(getBooks);
+    callGetBooksDescriptor = loadLibraryGenerator.next();
   });
 
-  it('should dispatch the loadLibrarySuccess action if it requests the data successfully', () => {
-    const putDescriptor = loadLibraryGenerator.next();
-    expect(putDescriptor.value).toEqual(put(loadLibrarySuccess(DEFAULT_BOOKS)));
+  it('should dispatch the loadLibrarySuccess action if it requests the data successfully', async () => {
+    const mockBooks = [{ isbn: '123' }];
+    getBooks.mockResolvedValue(mockBooks);
+
+    expect(callGetBooksDescriptor.value).toEqual(call(getBooks));
+
+    const putDescriptor = loadLibraryGenerator.next(mockBooks);
+    expect(putDescriptor.value).toEqual(put(loadLibrarySuccess(mockBooks)));
     expect(loadLibraryGenerator.next().done).toBe(true);
   });
 
@@ -111,12 +120,15 @@ describe('homePageSagas', () => {
 
   it('should start task to watch for watched actions', () => {
     const allDescriptor = homePageSagasGenerator.next();
-    expect(allDescriptor.value).toEqual(
-      all([
-        takeLatest(LOAD_LIBRARY, loadLibrarySaga),
-        takeLatest(ADD_BOOK, addBookSaga),
-        takeEvery(CHECK_BOOK, checkBookSaga),
-      ]),
+    const libraryServiceClient = createLibraryService('http://foo.com');
+    expect(JSON.stringify(allDescriptor.value)).toEqual(
+      JSON.stringify(
+        all([
+          takeLatest(LOAD_LIBRARY, loadLibrarySaga, libraryServiceClient),
+          takeLatest(ADD_BOOK, addBookSaga),
+          takeEvery(CHECK_BOOK, checkBookSaga),
+        ]),
+      ),
     );
     expect(homePageSagasGenerator.next().done).toBe(true);
   });

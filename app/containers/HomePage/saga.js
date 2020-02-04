@@ -2,7 +2,11 @@
  * Gets the repositories of the user from Github
  */
 
-import { all, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import {
+  createLibraryService,
+  getBooks,
+} from '../../repository/libraryService';
 import {
   addBookFailure,
   addBookSuccess,
@@ -15,14 +19,14 @@ import {
   ADD_BOOK,
   CHECK_BOOK,
   CHECK_BOOK_METHOD_OUT,
-  DEFAULT_BOOKS,
   LOAD_LIBRARY,
   NEW_BOOK,
 } from './constants';
 
-export function* loadLibrarySaga() {
+export function* loadLibrarySaga(getBooksWrapper) {
   try {
-    yield put(loadLibrarySuccess(DEFAULT_BOOKS));
+    const books = yield call(getBooksWrapper);
+    yield put(loadLibrarySuccess(books));
   } catch (err) {
     yield put(loadLibraryFailure(err));
   }
@@ -49,8 +53,11 @@ export function* checkBookSaga({ book, method }) {
 }
 
 export default function* homePageSagas() {
+  const libraryService = createLibraryService('http://localhost:8080');
   yield all([
-    takeLatest(LOAD_LIBRARY, loadLibrarySaga),
+    takeLatest(LOAD_LIBRARY, loadLibrarySaga, (...args) =>
+      getBooks(...args, libraryService),
+    ),
     takeLatest(ADD_BOOK, addBookSaga),
     takeEvery(CHECK_BOOK, checkBookSaga),
   ]);

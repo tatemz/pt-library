@@ -1,20 +1,7 @@
-/**
- *
- * App.js
- *
- * This component is the skeleton around the actual pages, and should only
- * contain code that should be seen on all pages. (e.g. navigation bar)
- *
- */
-
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { push } from 'connected-react-router';
-import HomePage from 'containers/HomePage/Loadable';
-import ManagePage from 'containers/ManagePage/Loadable';
+import HomePage from 'containers/HomePage';
+import ManagePage from 'containers/ManagePage';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
@@ -28,6 +15,7 @@ import { loadLibrary as loadLibraryAction } from './actions';
 import { APP_KEY } from './constants';
 import reducer from './reducer';
 import saga from './saga';
+import AppNav from '../../components/AppNav';
 
 export function App({
   loadLibrary,
@@ -40,39 +28,14 @@ export function App({
   useEffect(() => {
     if (loadLibrary) loadLibrary();
   }, []);
+
   return (
     <div>
-      <AppBar position="relative">
-        <Container>
-          <Toolbar>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              style={{ flexGrow: 1 }}
-            >
-              PT Library
-            </Typography>
-            <Button
-              color="inherit"
-              onClick={() =>
-                handleOnLibraryButtonClick && handleOnLibraryButtonClick()
-              }
-            >
-              Library
-            </Button>
-            <Button
-              color="inherit"
-              onClick={() =>
-                handleOnManageButtonClick && handleOnManageButtonClick()
-              }
-            >
-              Manage
-            </Button>
-          </Toolbar>
-        </Container>
-      </AppBar>
-      <main>
+      <AppNav
+        handleOnLibraryButtonClick={handleOnLibraryButtonClick}
+        handleOnManageButtonClick={handleOnManageButtonClick}
+      />
+      <main style={{ paddingTop: '6em' }}>
         <Container>
           <Switch>
             <Route exact path="/" component={HomePage} />

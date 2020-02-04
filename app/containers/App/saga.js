@@ -1,7 +1,3 @@
-/**
- * Gets the repositories of the user from Github
- */
-
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
   createLibraryService,

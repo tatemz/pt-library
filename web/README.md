@@ -17,6 +17,10 @@
 - [Contributing](#contributing)
 - [License](#license)
 
+## Background
+
+This application structure follows the tech stack used by [react-boilerplate](https://github.com/react-boilerplate/react-boilerplate) in order to make the application as enterprise-ready as possible.
+
 ## Install
 
 ### Prerequisites

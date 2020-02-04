@@ -55,6 +55,11 @@ export function ManagePage({
           title: 'Description',
           field: 'description',
         },
+        {
+          title: 'Checked Out',
+          field: 'checked',
+          type: 'boolean',
+        },
       ]}
       data={libraryBooks || []}
       isLoading={libraryLoading}

@@ -59,12 +59,14 @@ describe('Home Actions', () => {
   });
 
   describe('addBook', () => {
-    it('should return the correct type', () => {
+    it('should return the correct type and pass book', () => {
+      const book = { title: 'The Adventures of Foo Bar' };
       const expectedResult = {
         type: ADD_BOOK,
+        book,
       };
 
-      expect(addBook()).toEqual(expectedResult);
+      expect(addBook(book)).toEqual(expectedResult);
     });
   });
 

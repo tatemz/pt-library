@@ -26,7 +26,7 @@ import {
   checkBook,
   loadLibrary as loadLibraryAction,
 } from './actions';
-import { HOME_PAGE_KEY } from './constants';
+import { HOME_PAGE_KEY, NEW_BOOK } from './constants';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -70,7 +70,7 @@ export function HomePage({
         <button
           type="button"
           disabled={addingBook}
-          onClick={() => !addingBook && addBook && addBook()}
+          onClick={() => !addingBook && addBook && addBook(NEW_BOOK)}
         >
           Add Book
         </button>

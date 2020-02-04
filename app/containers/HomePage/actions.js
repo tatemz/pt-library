@@ -30,9 +30,10 @@ export function loadLibraryFailure(error) {
   };
 }
 
-export function addBook() {
+export function addBook(book) {
   return {
     type: ADD_BOOK,
+    book,
   };
 }
 

@@ -59,15 +59,24 @@ describe('loadLibrarySaga', () => {
 });
 
 describe('addBookSaga', () => {
+  let createBook;
   let addBookGenerator;
+  let callCreateBooksDescriptor;
+  const mockBook = { isbn: '123' };
 
   beforeEach(() => {
-    addBookGenerator = addBookSaga();
+    createBook = jest.fn();
+    addBookGenerator = addBookSaga(createBook, { book: mockBook });
+    callCreateBooksDescriptor = addBookGenerator.next();
   });
 
   it('should dispatch the addBookSuccess action if it requests the data successfully', () => {
-    const putDescriptor = addBookGenerator.next();
-    expect(putDescriptor.value).toEqual(put(addBookSuccess(NEW_BOOK)));
+    createBook.mockResolvedValue(mockBook);
+
+    expect(callCreateBooksDescriptor.value).toEqual(call(createBook, mockBook));
+
+    const putDescriptor = addBookGenerator.next(mockBook);
+    expect(putDescriptor.value).toEqual(put(addBookSuccess(mockBook)));
     expect(addBookGenerator.next().done).toBe(true);
   });
 
@@ -120,12 +129,11 @@ describe('homePageSagas', () => {
 
   it('should start task to watch for watched actions', () => {
     const allDescriptor = homePageSagasGenerator.next();
-    const libraryServiceClient = createLibraryService('http://foo.com');
     expect(JSON.stringify(allDescriptor.value)).toEqual(
       JSON.stringify(
         all([
-          takeLatest(LOAD_LIBRARY, loadLibrarySaga, libraryServiceClient),
-          takeLatest(ADD_BOOK, addBookSaga),
+          takeLatest(LOAD_LIBRARY, loadLibrarySaga, null),
+          takeLatest(ADD_BOOK, addBookSaga, null),
           takeEvery(CHECK_BOOK, checkBookSaga),
         ]),
       ),

@@ -4,6 +4,7 @@
 
 import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import {
+  createBook,
   createLibraryService,
   getBooks,
 } from '../../repository/libraryService';
@@ -20,7 +21,6 @@ import {
   CHECK_BOOK,
   CHECK_BOOK_METHOD_OUT,
   LOAD_LIBRARY,
-  NEW_BOOK,
 } from './constants';
 
 export function* loadLibrarySaga(getBooksWrapper) {
@@ -32,9 +32,10 @@ export function* loadLibrarySaga(getBooksWrapper) {
   }
 }
 
-export function* addBookSaga() {
+export function* addBookSaga(createBookWrapper, { book }) {
   try {
-    yield put(addBookSuccess(NEW_BOOK));
+    const newBook = yield call(createBookWrapper, book);
+    yield put(addBookSuccess(newBook));
   } catch (err) {
     yield put(addBookFailure(err));
   }
@@ -58,7 +59,9 @@ export default function* homePageSagas() {
     takeLatest(LOAD_LIBRARY, loadLibrarySaga, (...args) =>
       getBooks(...args, libraryService),
     ),
-    takeLatest(ADD_BOOK, addBookSaga),
+    takeLatest(ADD_BOOK, addBookSaga, (...args) =>
+      createBook(...args, libraryService),
+    ),
     takeEvery(CHECK_BOOK, checkBookSaga),
   ]);
 }

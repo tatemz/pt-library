@@ -2,8 +2,7 @@
  * Tests for HomePage sagas
  */
 
-import { all, put, takeEvery, takeLatest, call } from 'redux-saga/effects';
-import { createLibraryService } from '../../../repository/libraryService';
+import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import {
   addBookFailure,
   addBookSuccess,
@@ -16,9 +15,7 @@ import {
   ADD_BOOK,
   CHECK_BOOK,
   CHECK_BOOK_METHOD_IN,
-  CHECK_BOOK_METHOD_OUT,
   LOAD_LIBRARY,
-  NEW_BOOK,
 } from '../constants';
 import homePageSagas, {
   addBookSaga,
@@ -90,27 +87,30 @@ describe('addBookSaga', () => {
 });
 
 describe('checkBookSaga', () => {
+  let checkBook;
   let checkBookGenerator;
-  const book = NEW_BOOK;
+  let callCheckBooksDescriptor;
+  const mockBook = { isbn: '123', checked: true };
 
   beforeEach(() => {
-    checkBookGenerator = checkBookSaga({ book });
+    checkBook = jest.fn();
+    checkBookGenerator = checkBookSaga(checkBook, {
+      book: mockBook,
+      method: CHECK_BOOK_METHOD_IN,
+    });
+    callCheckBooksDescriptor = checkBookGenerator.next();
   });
 
   it('should dispatch the checkout checkBookSuccess action if it requests the data successfully', () => {
-    checkBookGenerator = checkBookSaga({ book, method: CHECK_BOOK_METHOD_OUT });
-    const putDescriptor = checkBookGenerator.next();
-    expect(putDescriptor.value).toEqual(
-      put(checkBookSuccess({ ...book, checked: true })),
-    );
-    expect(checkBookGenerator.next().done).toBe(true);
-  });
+    checkBook.mockResolvedValue(mockBook);
 
-  it('should dispatch the checkin checkBookSuccess action if it requests the data successfully', () => {
-    checkBookGenerator = checkBookSaga({ book, method: CHECK_BOOK_METHOD_IN });
-    const putDescriptor = checkBookGenerator.next();
+    expect(callCheckBooksDescriptor.value).toEqual(
+      call(checkBook, mockBook.isbn, CHECK_BOOK_METHOD_IN),
+    );
+
+    const putDescriptor = checkBookGenerator.next(mockBook);
     expect(putDescriptor.value).toEqual(
-      put(checkBookSuccess({ ...book, checked: false })),
+      put(checkBookSuccess({ ...mockBook, checked: true })),
     );
     expect(checkBookGenerator.next().done).toBe(true);
   });
@@ -119,7 +119,7 @@ describe('checkBookSaga', () => {
     checkBookGenerator.next();
     const error = Error('Foo');
     const putDescriptor = checkBookGenerator.throw(error);
-    expect(putDescriptor.value).toEqual(put(checkBookFailure(book, error)));
+    expect(putDescriptor.value).toEqual(put(checkBookFailure(mockBook, error)));
     expect(checkBookGenerator.next().done).toBe(true);
   });
 });
@@ -132,9 +132,9 @@ describe('homePageSagas', () => {
     expect(JSON.stringify(allDescriptor.value)).toEqual(
       JSON.stringify(
         all([
-          takeLatest(LOAD_LIBRARY, loadLibrarySaga, null),
-          takeLatest(ADD_BOOK, addBookSaga, null),
-          takeEvery(CHECK_BOOK, checkBookSaga),
+          takeLatest(LOAD_LIBRARY, loadLibrarySaga, null), // just ensuring we are passing a dependency
+          takeLatest(ADD_BOOK, addBookSaga, null), // just ensuring we are passing a dependency
+          takeEvery(CHECK_BOOK, checkBookSaga, null), // just ensuring we are passing a dependency
         ]),
       ),
     );

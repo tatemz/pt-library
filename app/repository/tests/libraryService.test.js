@@ -182,9 +182,7 @@ describe('libraryService repository', () => {
     it('should check in/out books', async () => {
       const testCheck = async (mockBook, method, expectedCheckResult) => {
         const { isbn } = mockBook;
-        const libraryService = jest
-          .fn()
-          .mockResolvedValueOnce({ book: mockBook });
+        const libraryService = jest.fn().mockResolvedValue({ book: mockBook });
 
         await checkBook(isbn, method, libraryService);
         expect(libraryService).toHaveBeenNthCalledWith(2, `/books/${isbn}`, {

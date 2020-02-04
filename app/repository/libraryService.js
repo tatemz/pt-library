@@ -60,10 +60,11 @@ export async function updateBook(book, libraryService) {
     throw ERR_ISBN_REQUIRED;
   }
 
-  await libraryService(`/books/${book.isbn}`, {
+  const data = await libraryService(`/books/${book.isbn}`, {
     method: 'PUT',
     body: JSON.stringify({ book }),
   });
+  return data.book;
 }
 
 export async function deleteBook(isbn, libraryService) {
@@ -87,7 +88,7 @@ export async function checkBook(isbn, method, libraryService) {
     throw ERR_BOOK_ALREADY_CHECKED_IN;
   }
 
-  await updateBook(
+  return updateBook(
     {
       ...book,
       checked: !book.checked,

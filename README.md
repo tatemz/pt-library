@@ -13,6 +13,8 @@
 
 ## Background
 
+![Demo](demo.gif)
+
 This project is a monorepo for two applications that depend on a Mongo DB host:
 
 - [A GoLang REST CRUD API](./web/README.md)

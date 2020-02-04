@@ -1,0 +1,7 @@
+**
+!Dockerfile
+!package*.json
+!app
+!server
+!internals
+!babel.config.js
